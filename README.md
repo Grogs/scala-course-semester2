@@ -11,5 +11,6 @@ Fix the tests in `HotelsControllerSpec` by looking at the clues included
 * You can run the tests on any file change by running this in the terminal:
     * `./sbt "~testOnly *.HotelsControllerSpec"`
 * You'll need to edit the `searchResults.scala.html` view
-    * Docs for Play's templates: https://www.playframework.com/documentation/2.5.x/ScalaTemplates
+    * Docs for Play's templates: https://www.playframework.com/documentation/2.5.x/ScalaTemplates  
+    
 You should end up with something like this: https://limitless-lowlands-73789.herokuapp.com/hotels/search?destination=london&distance=1.2
