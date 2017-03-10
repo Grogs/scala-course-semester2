@@ -14,3 +14,6 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /webjars/*file              controllers.WebJarAssets.at(file)
 
 GET     /hotels/search              controllers.HotelsController.search(destination: String, distance: String)
+
+GET     /hotels/api/*path           controllers.HotelsController.api(path: String)
+POST    /hotels/api/*path           controllers.HotelsController.api(path: String)

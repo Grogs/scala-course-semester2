@@ -30,8 +30,8 @@ lazy val shared = crossProject.crossType(CrossType.Pure).settings(
     commonSettings,
     libraryDependencies ++= Seq(
         "com.lihaoyi" %%% "upickle" % "0.3.6",
-        "com.lihaoyi" %%% "autowire" % "0.2.4",
-        "com.lihaoyi" %%% "scalatags" % "0.5.2"
+        "com.lihaoyi" %%% "autowire" % "0.2.6",
+        "com.lihaoyi" %%% "scalatags" % "0.6.3"
     )
 ).jsConfigure(_ enablePlugins ScalaJSWeb)
 lazy val sharedJvm = shared.jvm
