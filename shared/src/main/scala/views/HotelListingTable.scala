@@ -36,25 +36,7 @@ object HotelListingTable {
 
   def apply(hotels: Seq[Hotel]) = {
     table(id := "hotels", `class` := "table",
-      thead(
-        tr(
-          th("Name"),
-          th("Location"),
-          th("Images")
-        )
-      ),
-      tbody(
-        for (hotel <- hotels) yield {
-          tr(
-            td(hotel.name),
-            td(a(href := gmapsLink(hotel), "Map")),
-            td(
-              for (i <- hotel.images) yield
-                img(height := 200.px, src := i)
-            )
-          )
-        }
-      )
+      tr()
     )
 
   }
