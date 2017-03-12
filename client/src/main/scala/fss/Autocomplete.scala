@@ -9,6 +9,10 @@ import scalatags.JsDom.all._
 
 /**
   * Requires Bootstrap CSS to be in scope
+  *
+  * @param input The input box to provide autocompletion on
+  * @param values The possible values
+  * @param select An optional callback to call when the user clicks on a value
   */
 class Autocomplete(input: Input, values: Seq[String], select: String => Unit = _ => ()) {
 

@@ -21,7 +21,10 @@ Start by checking out the `lesson6`branch
   * Replace the previous table with the new table
 * Remove the Search button, it's not needed anymore.
 
+
 ##Extensions
 
 ###Step 3 - Autocompletion of destinations
 Take a look at `fss.Autocomplete` and hook it up to the destination input
+* You'll need to edit the `apply` method in `views.HotelListingTable`
+    * ScalaTags documentation: http://www.lihaoyi.com/scalatags/

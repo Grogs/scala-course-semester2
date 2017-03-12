@@ -43,8 +43,8 @@ class App extends JSApp {
   def reload(destination: String, distance: Double) = {
     for {
       hotels <- Client[HotelsService].search(destination, distance).call()
-      table = HotelListingTable.render(hotels)
-    } hotelsTables().outerHTML = table.render
+      table = HotelListingTable(hotels).render
+    } hotelsTables().outerHTML = table
   }
 
 }

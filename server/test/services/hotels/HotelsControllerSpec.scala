@@ -16,7 +16,7 @@ class HotelsControllerSpec extends PlaySpec with OneAppPerTest {
       body must include("Park Plaza Westminster Bridge London")
 
       withClue("See docs for tables: http://getbootstrap.com/css/#tables") {
-        body must include("<table class=\"table\">")
+        body must include regex ("<table.*class=\"table\">")
       }
     }
 
