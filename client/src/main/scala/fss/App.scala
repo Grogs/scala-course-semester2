@@ -22,12 +22,29 @@ class App extends JSApp {
   @JSExport
   def main(): Unit = {
 
-    //This code runs when the page laods
+
+    new Autocomplete(
+      document.getElementById("destination").asInstanceOf[Input],
+      Seq("London", "Paris", "Bath"),
+      _ => handleChange(null)
+    )
+
+    destination().onkeyup = handleChange _
+    distance().onkeyup = handleChange _
+    distance().onchange = handleChange _
+
+    searchButton().style.display = "none"
+  }
+
+  def handleChange(e: Event) = {
+    reload(destination().value, distance().value.toDouble)
   }
 
   def reload(destination: String, distance: Double) = {
-
-    //Use Client[HotelService] here
+    for {
+      hotels <- Client[HotelsService].search(destination, distance).call()
+      table = HotelListingTable(hotels).render
+    } hotelsTables().outerHTML = table
   }
 
 }
