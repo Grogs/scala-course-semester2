@@ -1,6 +1,6 @@
-#Lesson 6
+#Lesson 7
 
-Start by checking out the `lesson6`branch
+Start by checking out the `lesson7`branch
 
 ###Step 1 - Use ScalaTags
 * Fix the tests in `HotelsControllerSpec` by looking at the clues included
