@@ -41,7 +41,8 @@ lazy val sharedJs = shared.js
 lazy val client = project.enablePlugins(ScalaJSPlugin, ScalaJSWeb).settings(
     commonSettings,
     mainClass in Compile := Some("fss.App"),
-      persistLauncher := true,
+    emitSourceMaps in fullOptJS := true,
+    persistLauncher := true,
     persistLauncher in Test := false,
     libraryDependencies ++= Seq(
         "org.scala-js" %%% "scalajs-dom" % "0.9.1",
