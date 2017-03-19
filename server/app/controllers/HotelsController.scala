@@ -15,6 +15,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 @Singleton
 class HotelsController @Inject()(hotelsService: HotelsService, webJarAssets: WebJarAssets) extends Controller {
 
+  val googleMapsApiKey = Option(System.getProperty("GOOGLE_MAPS_API_KEY"))
+
   implicit val coordinates = Json.format[Coordinates]
   implicit val writes = Json.format[Hotel]
 
@@ -49,7 +51,7 @@ class HotelsController @Inject()(hotelsService: HotelsService, webJarAssets: Web
         views.html.searchResults(
           destination, radius,
           hotelsService.search(destination, distance)
-        )(webJarAssets)
+        )(webJarAssets, googleMapsApiKey)
       )
     } else {
       BadRequest("Invalid distance")
