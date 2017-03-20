@@ -1,62 +1,117 @@
 package services.hotels
 
 import org.jsoup.Jsoup
-import org.scalatest.{FunSuite, Matchers}
 import org.scalatestplus.play._
 import play.api.test.Helpers._
 import play.api.test._
 
-import scala.collection.JavaConverters._
+class HotelsControllerSpec extends PlaySpec with OneAppPerTest {
 
-class HotelsControllerSpec extends FunSuite with WsScalaTestClient with OneAppPerTest with Matchers {
+  "search page" should {
 
-  /*
+    "display results in a table" in {
 
-    See http://getbootstrap.com/javascript/#modals
+      val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
 
-  */
+      body must include("Park Plaza Westminster Bridge London")
 
+      withClue("See docs for tables: http://getbootstrap.com/css/#tables") {
+        body must include regex ("<table.*class=\"table\">")
+      }
+    }
 
-  test("display results in a table"){
+    "display images in the table" in {
 
-    val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
+      val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
 
-    val button = Jsoup.parse(body).select("button").first()
+      withClue("Your table must include an images column. Docs for HTML tables: https://www.w3schools.com/tags/tag_table.asp") {
+        body must include("<th>Images</th>")
+      }
 
-    button.classNames.asScala should contain ("btn")
-    button.id shouldBe "show-map"
+      withClue("Put the images for each hotel in the column you created using <img> tags: https://www.w3schools.com/tags/tag_img.asp") {
+        body must include("http://exp.cdn-hotels.com/hotels/4000000/3120000/3113100/3113039/3113039_31_y.jpg")
+      }
+    }
+
+    "add a form to allow the user to change their search" in {
+      val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
+
+      withClue("See bootstrap docs for forms: http://getbootstrap.com/css/#forms") {
+        body must include("<form")
+      }
+
+      withClue("Your form should include an input for the destination and distance: https://www.w3schools.com/tags/att_form_method.asp") {
+        body must include regex "<input.*name=\"destination\""
+        body must include regex "<input.*name=\"distance\""
+      }
+
+      withClue("The inputs should contain the values the user searched with: https://www.w3schools.com/tags/att_input_value.asp") {
+        body must include regex "<input.*value=\"london\""
+        body must include regex "<input.*value=\"1.2\""
+      }
+
+      withClue("There should be a search button that submits the form") {
+        body must include regex "<button.*type=\"submit\""
+      }
+
+      withClue("Make sure your form submits a GET: https://www.w3schools.com/tags/att_form_method.asp") {
+        body must include("method=\"get\"")
+      }
+    }
+
+    "include a link to the hotel on Google Maps" in {
+
+      val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
+
+      withClue("Add a new column for a link to the hotel on google maps") {
+        body must include("<th>Location</th>")
+      }
+
+      withClue("Add a link using the <a> tag. Look at the test to see how to create the link.") {
+        val googleMapsSearchQuery = "Park Plaza Westminster Bridge London near 51.501108,-0.117331"
+        body must include(s"""<a href="http://maps.google.com/?q=$googleMapsSearchQuery">""")
+      }
+    }
   }
 
-  test("bootstrap modal for the map"){
 
-    val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
+  "search endpoint" should {
 
-    val maybeModal = Jsoup.parse(body).select("div.modal").asScala.headOption
+    "send 200 on valid request" in {
+      withClue("You need to add an entry to your routes file, and start implementing HotelsController.search\n") {
 
-    maybeModal should be 'defined
+        route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=5")).map(status) mustBe Some(OK)
+      }
+    }
 
-    val modal = maybeModal.get
+    "include distance and destination in the title" in {
+      withClue("You can pass the endpoint's parameters to your view\n") {
+        val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=5")).map(contentAsString).get
+        val title = Jsoup.parse(body).select("title").html
 
-    modal.id shouldBe "mapModal"
-  }
+        title must include("london")
+        title must (include("5km") or include("5 kilometers"))
+      }
+    }
 
-  test("button should be configurd to open the modal"){
+    "output the titles of the hotels found" in {
+      withClue("Now you need to output your results. Document for Play's Twirl templates is here: https://www.playframework.com/documentation/2.5.x/ScalaTemplates#Overview\n") {
 
-    val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
+        val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
 
-    val modal = Jsoup.parse(body).select("div.modal").first
+        body must include("Park Plaza Westminster Bridge London")
+        body must include("Club Quarters, Trafalgar Square")
+      }
+    }
 
-    modal.attr("data-toggle") shouldBe "modal"
-    modal.attr("data-target") shouldBe "#mapModal"
-  }
+    "send 400 on invalid distance, with a descriptive error message" in {
+      withClue("Validate the distance in the Controller. You'll need to use play.api.mvc.Results.BadRequest.\n") {
 
-  test("modal should include a container for the google map"){
+        route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=-5")).map(status) mustBe Some(BAD_REQUEST)
+        route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=-5")).map(contentAsString) mustBe Some("Invalid distance")
+      }
+    }
 
-    val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
-
-    val modal = Jsoup.parse(body).select("div.modal").first
-
-    modal.select()
   }
 
 }
