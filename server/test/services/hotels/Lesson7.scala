@@ -17,14 +17,15 @@ class Lesson7 extends FunSuite with WsScalaTestClient with OneAppPerTest with Ma
     */
 
 
-    test("display results in a table"){
+    test("button for showing the map"){
 
-        val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
+        val body = Jsoup.parse(route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get)
 
-        val button = Jsoup.parse(body).select("button").first()
+        val buttons = body.select("button").asScala
 
-        button.classNames.asScala should contain ("btn")
-        button.id shouldBe "show-map"
+        buttons.map(_.id) should contain ("show-map")
+
+        body.getElementById("show-map").classNames.asScala should contain ("btn")
     }
 
     test("bootstrap modal for the map"){
@@ -44,7 +45,7 @@ class Lesson7 extends FunSuite with WsScalaTestClient with OneAppPerTest with Ma
 
         val body = route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get
 
-        val modal = Jsoup.parse(body).select("div.modal").first
+        val modal = Jsoup.parse(body).getElementById("show-map")
 
         modal.attr("data-toggle") shouldBe "modal"
         modal.attr("data-target") shouldBe "#mapModal"
@@ -56,7 +57,12 @@ class Lesson7 extends FunSuite with WsScalaTestClient with OneAppPerTest with Ma
 
         val modal = Jsoup.parse(body).select("div.modal").first
 
-        modal.select(".map")
+        val mapContainer = modal.getElementById("map")
+
+        mapContainer should not be null
+
+        //Specify the height otherwise it will be 0px high
+        mapContainer.attr("style") shouldBe "height: 500px"
     }
 
 }
