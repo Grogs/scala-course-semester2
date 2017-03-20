@@ -17,7 +17,7 @@ class Lesson7 extends FunSuite with WsScalaTestClient with OneAppPerTest with Ma
     */
 
 
-    test("button for showing the map"){
+    test("add another button for showing the map"){
 
         val body = Jsoup.parse(route(app, FakeRequest(GET, "/hotels/search?destination=london&distance=1.2")).map(contentAsString).get)
 
