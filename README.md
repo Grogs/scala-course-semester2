@@ -4,7 +4,7 @@ Start by checking out the `lesson7`branch
 
 This week we want to allow the user to display the search results on a map.
 
-Demo: https://limitless-lowlands-73789.herokuapp.com/hotels/search?destination=london&distance=1.5
+Demo: https://scala-course.herokuapp.com/hotels/search?destination=london&distance=1.5
 
 ## Step 1 Add button to create modal for the map
 Start by adding a button which launches a bootstrap modal to contain the map.  
